@@ -18,7 +18,8 @@ def index():
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
-        request.files['file'].save(os.path.join('data', 'upload.pcap'))
+        os.makedirs('data', exist_ok=True)
+        request.files['file'].save('data/upload.pcap')
         with open('data/data.csv', 'w') as f:
             call(['tshark -r data/upload.pcap -T fields -e ip.src -e ip.dst -e _ws.col.Protocol -e _ws.col.Port -E header=y -E separator=,'], shell=True, stdout=f)
         return render_template('pcap_visualization.html')
